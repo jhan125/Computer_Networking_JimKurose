@@ -21,8 +21,6 @@
 	- [Section 6. Networks Under Attack](#section-6-networks-under-attack)
 		- [Notes](#notes-5)
 		- [Review Questions](#review-questions-5)
-	- [Section 7. History of Computer Networking and the Internet](#section-7-history-of-computer-networking-and-the-internet)
-		- [Notes](#notes-6)
    
 ## Section 1. What Is the Internet?
 ### Notes
@@ -171,11 +169,11 @@
 
 ### Notes
 
-**How do packet delay and loss occur?**
-§ packets queue in router buffers, waiting for turn for transmission
-§ queue length grows when arrival rate to link (temporarily) exceeds output link
+- **How do packet delay and loss occur?**
+  - packets queue in router buffers, waiting for turn for transmission
+  - queue length grows when arrival rate to link (temporarily) exceeds output link
 capacity
-§ packet loss occurs when memory to hold queued packets fills up
+  - packet loss occurs when memory to hold queued packets fills up
 
 **4 sources that cause packet delays:**
 - Nodal Processing Delay
@@ -198,17 +196,13 @@ capacity
 
 d(nodal) = d(proc) + d(queue) + d(trans) + d(prop)
 
-**d(trans) and d(prop) very different**
+- **d(trans) and d(prop) very different**
 
-Transmission（传输）
+  - Transmission（传输）指的是数据从源头（例如计算机A）发送到网络中的行为。这一过程涉及到将数据编码成信号（比如电信号、光信号），然后通过网络连接（如以太网线缆、光纤或无线电波）发送出去。在这个阶段，重点是数据的“输出”，即数据是如何从源头发送出去的。
 
-这指的是数据从源头（例如计算机A）发送到网络中的行为。这一过程涉及到将数据编码成信号（比如电信号、光信号），然后通过网络连接（如以太网线缆、光纤或无线电波）发送出去。在这个阶段，重点是数据的“输出”，即数据是如何从源头发送出去的。
+  - Propagation（传播）则指的是这些编码过的信号在物理媒介（如网络电缆、光纤或空气）中移动的过程。在这个阶段，信号正在从一个地点传输到另一个地点，比如从一个路由器传输到另一个路由器。这个过程主要涉及到信号的移动速度，这通常由媒介的物理属性和信号的传播距离决定。
 
-Propagation（传播）
-
-传播则指的是这些编码过的信号在物理媒介（如网络电缆、光纤或空气）中移动的过程。在这个阶段，信号正在从一个地点传输到另一个地点，比如从一个路由器传输到另一个路由器。这个过程主要涉及到信号的移动速度，这通常由媒介的物理属性和信号的传播距离决定。
-
-简单来说，transmission是关于数据如何被发送的，而propagation是关于一旦数据被发送，它如何通过网络媒介移动。两者都是数据通信过程中的重要部分，但关注的重点不同。
+  - 简单来说，transmission是关于数据如何被发送的，而propagation是关于一旦数据被发送，它如何通过网络媒介移动。两者都是数据通信过程中的重要部分，但关注的重点不同。
 
 **Traffic intensity**
 
@@ -275,6 +269,7 @@ bottleneck link: link on end-end path that constrains end-end throughput.
 		- 64 seconds.
 
 ## Section 5. Protocol Layers and Their Service Models
+
 ### Notes
 - A layered architecture allows us to discuss a well-defined, specific part of a large and complex system.
 - The internet protocol stack consists of the following layers from top to down:
@@ -283,6 +278,9 @@ bottleneck link: link on end-end path that constrains end-end throughput.
 	- Network layer: IP
 	- Link layer: Ethernet, WIFI
 	- Physical layer
+  
+<img width="934" alt="Screenshot 2024-01-19 at 9 59 12 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/53ffd428-bac0-45b6-888e-1465e17b3f9f">
+
 ### Review Questions
 -  List five tasks that a layer can perform. Is it possible that one (or more) of these tasks could be performed by two (or more) layers?
 	-  Five generic tasks are error control, flow control, segmentation and reassembly, multiplexing, and connection setup.
@@ -302,12 +300,29 @@ bottleneck link: link on end-end path that constrains end-end throughput.
 	- Hosts process all five layers.
 
 ## Section 6. Networks Under Attack
+
 ### Notes
-- 
+- Possible attacks
+  1. 数据包拦截（packet interception）好比是有人在邮局里偷看别人的信。在计算机网络中，这种行为叫做“数据包嗅探”（packet sniffing）。当数据（像信件一样）在网络（可以想象成一条公路）上传输时，有些不好的人（黑客）会使用特殊的工具来“嗅探”这些数据。特别是在像共享以太网或无线网络这样的广播媒体中，他们可以抓取经过的所有数据包，包括密码等敏感信息。
+  2. 伪装身份（fake identity）就像是有人寄了一个假的地址标签的包裹。在网络中，这称为“IP欺骗”（IP spoofing）。黑客发送一个带有假冒源地址的数据包，让接收者以为数据包来自另一个合法的来源。
+  3. 服务拒绝攻击（Denial of Service, DoS）就像一个坏人故意在商店门口堆满了垃圾，导致顾客无法进入商店。在计算机网络中，这种攻击是通过发送大量无意义的流量到某个服务器，使得合法的流量不能到达服务器，从而使服务器或网络带宽不可用。
+    - 服务拒绝攻击通常有以下步骤：
+      - 选择目标： 就是黑客选定要攻击的服务器。
+      - 入侵周围的主机： 黑客会入侵网络中的其他电脑，这些被入侵的电脑被称为“僵尸网络”（botnet）的一部分。
+      - 从受损的主机发送数据包到目标： 黑客通过这些被控制的电脑发送大量数据包给目标服务器，导致正常的流量无法到达。
+
+**Lines of defense:**
+- authentication: proving you are who you say you are
+  - cellular networks provides hardware identity via SIM card; no such hardware assist in traditional Internet
+- confidentiality: via encryption
+- integrity checks: digital signatures prevent/detect tampering
+- access restrictions: password-protected VPNs
+- firewalls: specialized “middleboxes” in access and core networks:
+  - off-by-default: filter incoming packets to restrict senders, receivers, applications
+  - detecting/reacting to DOS attacks
+- … lots more on security (throughout, Chapter 8)
+
 ### Review Questions
 -  What is self-replicating malware?
 - Describe how a botnet can be created and how it can be used for a DDoS attack.
 - Suppose Alice and Bob are sending packets to each other over a computer network. Suppose Trudy positions herself in the network so that she can capture all the packets sent by Alice and send whatever she wants to Bob; she can also capture all the packets sent by Bob and send whatever she wants to Alice. List some of the malicious things Trudy can do from this position.
-## Section 7. History of Computer Networking and the Internet
-### Notes
-
