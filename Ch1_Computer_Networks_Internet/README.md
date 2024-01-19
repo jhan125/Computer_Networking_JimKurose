@@ -1,5 +1,29 @@
 # Chapter 1. Computer Networks and the Internet
 
+# Table of Contents
+- [Chapter 1. Computer Networks and the Internet](#chapter-1-computer-networks-and-the-internet)
+- [Table of Contents](#table-of-contents)
+	- [Section 1. What Is the Internet?](#section-1-what-is-the-internet)
+		- [Notes](#notes)
+		- [Review Questions](#review-questions)
+	- [Section 2. The Network Edge](#section-2-the-network-edge)
+		- [Notes](#notes-1)
+		- [Review Questions](#review-questions-1)
+	- [Section 3. The Network Core](#section-3-the-network-core)
+		- [Notes](#notes-2)
+		- [Review Questions](#review-questions-2)
+	- [Section 4. Delay, Loss, and Throughput in Packet-Switched Networks](#section-4-delay-loss-and-throughput-in-packet-switched-networks)
+		- [Notes](#notes-3)
+		- [Review Questions](#review-questions-3)
+	- [Section 5. Protocol Layers and Their Service Models](#section-5-protocol-layers-and-their-service-models)
+		- [Notes](#notes-4)
+		- [Review Questions](#review-questions-4)
+	- [Section 6. Networks Under Attack](#section-6-networks-under-attack)
+		- [Notes](#notes-5)
+		- [Review Questions](#review-questions-5)
+	- [Section 7. History of Computer Networking and the Internet](#section-7-history-of-computer-networking-and-the-internet)
+		- [Notes](#notes-6)
+   
 ## Section 1. What Is the Internet?
 ### Notes
  - The Internet is a computer network that interconnects billions of computing devices throughout the world. Theses are called hosts or end-systems like:
@@ -73,6 +97,7 @@
 		- Wireless LAN
 		- Digital satellite channel
 - The actual cost of physical link is relatively minor compared with other networking costs.
+
 ### Review Questions
 -  List four access technologies. Classify each one as home access, enterprise access, or wide-area wireless access.
 	- Home access: Ethernet LAN, Digital Subscriber Line over telephone line, and Cable internet access.
@@ -96,6 +121,7 @@
 	- 3G and 4G wide-area wireless access networks. In these systems, packets are transmitted over the same wireless infrastructure used for cellular telephony, with the base station thus being managed by a telecommunications provider. This provides wireless access to users within a radius of tens of kilometers of the base station.
 
 ## Section 3. The Network Core
+
 ### Notes
  - To send a message from source end system to a destination end system, the source breaks long messages into smaller chunks of data known as packets.
  - Packet switches implement the store-and-forward mechanism.
@@ -110,6 +136,7 @@
  - Packets suffer from delaying due to store-and-forward and queuing.
  - Packet loss occurs when there is a congestion in the network which results in the filling of the output buffer.
  - Each router has a forwarding table that maps destination addresses to the router's outbound links.
+  
 ### Review Questions
  - Suppose there is exactly one packet switch between a sending host and a receiving host. The transmission rates between the sending host and the switch and between the switch and the receiving host are R1 and R2, respectively. Assuming that the switch uses store-and-forward packet switching, what is the total end-to-end delay to send a packet of length L? (Ignore queuing, propagation delay, and processing delay.)
 	 - (L/R1)+(L/R2)
@@ -139,23 +166,54 @@
 	- Motivates: 
 		- It is used to save money by transfer data and less time to travel content. 
 		- Content providers to control over the services.
+
 ## Section 4. Delay, Loss, and Throughput in Packet-Switched Networks
+
 ### Notes
-- The most important delays that face packets are:
-	- Nodal Processing Delay
-		- The time required to examine the packet's header and determine where to direct the packet.
-		- This delay is typically on the order of microseconds or less.
-	- Queuing Delay
-		- At the queue, the packet experiences a delay as it waits to be transmitted onto the link.
-		- This delay can be on the order of microseconds to milliseconds.
-	- Transmission Delay
-		- The amount of time required to push all of the packet's bits into the link.
-		- This delay is on the order of microseconds to milliseconds.
-	- Propagation Delay
-		- The time required to propagate from the beginning of the link to the next router.
-		- The speed depends on the link physical medium.
-		- In WAN, this dely is on the order of milliseconds.
-- The traffic intensity is the ration of (arrival rate of bits) and (service rate of bits)
+
+**How do packet delay and loss occur?**
+§ packets queue in router buffers, waiting for turn for transmission
+§ queue length grows when arrival rate to link (temporarily) exceeds output link
+capacity
+§ packet loss occurs when memory to hold queued packets fills up
+
+**4 sources that cause packet delays:**
+- Nodal Processing Delay
+  - check bit errors, determine output link, typically < microsecs
+  - The time required to examine the packet's header and determine where to direct the packet.
+  - This delay is typically on the order of microseconds or less.
+- Queuing Delay
+  - time waiting at output link for transmission, depends on congestion level of router
+  - At the queue, the packet experiences a delay as it waits to be transmitted onto the link.
+  - This delay can be on the order of microseconds to milliseconds.
+- Transmission Delay
+  - L: packet length(bits), R: link transmission rate(bps), d(trans) = L/R
+  - The amount of time required to push all of the packet's bits into the link.
+  - This delay is on the order of microseconds to milliseconds.
+- Propagation Delay
+  - d: length of physical link, s: propagation speed, d(prop) = d/s
+  - The time required to propagate from the beginning of the link to the next router.
+  - The speed depends on the link physical medium.
+  - In WAN, this delay is on the order of milliseconds.
+
+d(nodal) = d(proc) + d(queue) + d(trans) + d(prop)
+
+**d(trans) and d(prop) very different**
+
+Transmission（传输）
+
+这指的是数据从源头（例如计算机A）发送到网络中的行为。这一过程涉及到将数据编码成信号（比如电信号、光信号），然后通过网络连接（如以太网线缆、光纤或无线电波）发送出去。在这个阶段，重点是数据的“输出”，即数据是如何从源头发送出去的。
+
+Propagation（传播）
+
+传播则指的是这些编码过的信号在物理媒介（如网络电缆、光纤或空气）中移动的过程。在这个阶段，信号正在从一个地点传输到另一个地点，比如从一个路由器传输到另一个路由器。这个过程主要涉及到信号的移动速度，这通常由媒介的物理属性和信号的传播距离决定。
+
+简单来说，transmission是关于数据如何被发送的，而propagation是关于一旦数据被发送，它如何通过网络媒介移动。两者都是数据通信过程中的重要部分，但关注的重点不同。
+
+**Traffic intensity**
+
+Traffic intensity is the rate of (arrival rate of bits) and (service rate of bits)
+
 	- let, a: average packet arrival rate, L: packet length (bits), R: link bandwidth (bit transmission rate).
 	- Traffic Intensity = L.a/R
 	- La/R ~ 0: avg. queueing delay small
@@ -163,25 +221,59 @@
 	- La/R > 1: more “work” arriving  is more than can be serviced -  average delay infinite!
 - The fraction of lost packets increases as the traffic intensity increases.
 - Performance at a node is often measured not only in terms of delay, but also in terms of the probability of packet loss.
-- traceroute program: provides delay measurement from source to router along end-end Internet path towards destination.
-- Throughput: rate (bits/time unit) at which bits are being sent from sender to receiver.
+
+traceroute program: 
+
+provides delay measurement from source to router along end-end Internet path towards destination.
+
+**Packet Loss**
+- queue (aka buffer) preceding link in buffer has finite capacity
+- packet arriving to full queue dropped (aka lost)
+- lost packet may be retransmitted by previous node, by source end system, or not at all
+
+**Throughput（吞吐量）**
+
+rate (bits/time unit) at which bits are being sent from sender to receiver.
 	- instantaneous: rate at given point in time.
 	- average: rate over longer period of time.
-- bottleneck link: link on end-end path that constrains  end-end throughput.
+
+用一些简单的比喻来理解这个概念：
+
+想象一下有一根水管，水管的一端连接着水桶（服务器），另一端连接着水杯（计算机）。水桶里装的不是水，而是数据，我们可以称它为“数据流”。
+
+吞吐量（Throughput）：这就像是水桶向水杯里倒水的速度，用“多少升/每秒”来衡量，但在我们的例子中，我们用“多少比特/每秒”来衡量数据的传输速度。这个速度就是从水桶（服务器）到水杯（计算机）的数据传输速度。
+
+吞吐量有两种不同的类型：
+
+- 瞬时吞吐量（Instantaneous）：这就像你突然看了一下水桶倒水的速度，就在那一瞬间的速度，可能是因为水桶刚倒的时候水流特别快，或者水快倒完时变慢了。
+
+- 平均吞吐量（Average）：这不是看一瞬间的速度，而是你看了一段时间，比如一分钟，然后计算这一分钟内平均的倒水速度是多少。这就像是我们不仅仅看水桶开始倒水的速度，还要看整个过程中的平均速度。
+
+水管能够承载的数据流的速率有两个表示：
+- R_s（server）：这是水桶（服务器）能够向水管里倒水的速率，或者说是服务器能发送数据的速率。
+- R_c（client）：这是水管能够承载的最大速率，就是水管最多能允许多快的水流通过，不会溢出来。在计算机网络中，这可以理解为网络的最大传输能力。
+
+bottleneck link: link on end-end path that constrains end-end throughput.
+
+“瓶颈链路”意思是从一端传到另一端的平均吞吐量，要么是由服务器的输出速率决定的，要么是由网络中最慢的连接速率决定的，这取决于哪个速率更慢。这就像是水流从水桶流向水杯的过程，要么是水桶倒水的速度慢，要么是水管狭窄导致水流不畅。
+
 ### Review Questions
 - Consider sending a packet from a source host to a destination host over a fixed route. List the delay components in the end-to-end delay. Which of these delays are constant and which are variable?
 	- Nodal Processing Delay (Constant).
-	- Queuing Dealy (Variable).
+	- Queuing Delay (Variable).
 	- Transmission Delay (Constant).
 	- Propagation Delay (Constant).
+  
 -  How long does it take a packet of length 1,000 bytes to propagate over a link of distance 2,500 km, propagation speed 2.5 * 10^8 m/s, and transmission rate 2 Mbps? More generally, how long does it take a packet of length L to propagate over a link of distance d, propagation speed s, and transmission rate R bps? Does this delay depend on packet length? Does this delay depend on transmission rate?
 	- The propagation delay is the ratio between the distance and the speed which is numerically equal to 0.01 seconds.
 	- This numerical value doesn't depend on the length of the packet or the transmission rate.
+
 - Suppose Host A wants to send a large file to Host B. The path from Host A to Host B has three links, of rates R1 = 500 kbps, R2 = 2 Mbps, and R3 = 1 Mbps. 
 	- a. Assuming no other traffic in the network, what is the throughput for the file transfer?
 		- The minimum value of the rates of the three links = 500 Kbps.
 	- b. Suppose the file is 4 million bytes. Dividing the file size by the throughput, roughly how long will it take to transfer the file to Host B?
 		- 64 seconds.
+
 ## Section 5. Protocol Layers and Their Service Models
 ### Notes
 - A layered architecture allows us to discuss a well-defined, specific part of a large and complex system.
@@ -208,6 +300,7 @@
 	- Routers process network, link and physical layers (layers 1 through 3).
 	- Link layer switches process link and physical layers (layers 1 through 2).
 	- Hosts process all five layers.
+
 ## Section 6. Networks Under Attack
 ### Notes
 - 
