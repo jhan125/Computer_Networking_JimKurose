@@ -5,26 +5,35 @@
 - [Table of Contents](#table-of-contents)
 	- [Section 1. Principles of Network Applications](#section-1-principles-of-network-applications)
 		- [Notes](#notes)
+			- [Client-Server Paradigm](#client-server-paradigm)
+			- [Peer-to-peer architecture](#peer-to-peer-architecture)
+			- [Socket](#socket)
 		- [Review Questions](#review-questions)
 	- [Section 2. The Web and HTTP](#section-2-the-web-and-http)
 		- [Notes](#notes-1)
-		- [Review Questions](#review-questions-1)
-	- [Section 3. Email](#section-3-email)
+			- [HTTP: hypertext transfer protocol](#http-hypertext-transfer-protocol)
+			- [Cookies](#cookies)
+			- [Web caches 缓存 (aka proxy server 代理服务器)](#web-caches-缓存-aka-proxy-server-代理服务器)
+			- [Conditional GET](#conditional-get)
+			- [总结](#总结)
+			- [HTTP/2 和 HTTP/3](#http2-和-http3)
+	- [Section 3. Email, SMTP, IMAP](#section-3-email-smtp-imap)
 		- [Notes](#notes-2)
-		- [Review Questions](#review-questions-2)
+		- [Review Questions](#review-questions-1)
 	- [Section 4. The Domain Name Service: DNS](#section-4-the-domain-name-service-dns)
 		- [Notes](#notes-3)
-		- [Review Questions](#review-questions-3)
+		- [Review Questions](#review-questions-2)
 	- [Section 5. Peer-to-Peer File Distribution](#section-5-peer-to-peer-file-distribution)
 		- [Notes](#notes-4)
-		- [Review Questions](#review-questions-4)
+		- [Review Questions](#review-questions-3)
 	- [Section 6. Video Streaming and Content Distribution Networks](#section-6-video-streaming-and-content-distribution-networks)
 		- [Notes](#notes-5)
-		- [Review Questions](#review-questions-5)
+		- [Review Questions](#review-questions-4)
 	- [Section 7. Socket Programming-Creating Network Applications](#section-7-socket-programming-creating-network-applications)
 		- [Notes](#notes-6)
 	- [Section 8. Supplemental Topics](#section-8-supplemental-topics)
 		- [Notes](#notes-7)
+		- [Review Questions](#review-questions-5)
    
 ## Section 1. Principles of Network Applications
 
@@ -38,10 +47,11 @@
 	- There is no way to make two clients talk to each other.
 - In P2P architecture:
 	- There is not reliance on a dedicated server.
-	- The users share the content in a highly decentraliazed network.
+	- The users share the content in a highly decentralized network.
 - Processes on two different end systems communicate with each other by exchanging messages across the computer network.
 	- processes communicating with each other reside in the application layer of the five-layer protocol stack.
-- In the context of a communication session between a pair of processes, the process that initiates the communication (that is, initially contacts the other process at the beginning of the session) is labeled as the client. The process that waits to be contacted to begin the session is the server.
+	- client process: process that initiates communication
+	- server process: process that waits to be contacted
 - A socket is the interface between the application layer and the transport layer within a host.
 - The only control that the application developer has on the transport-layer side is:
 	- the choice of transport protocol
@@ -49,8 +59,16 @@
 - To identify the receiving process, two pieces of information need to be specified:
 	- the address of the host
 	- an identifier that specifies the receiving process in the destination host.
+- An application-layer protocol defines:
+    - types of messages exchanged,e.g., request, response
+    - message syntax: what fields in messages & how fields are delineated
+    - message semantics: meaning of information in fields
+    - rules for when and how processes send & respond to messages
+    - open protocols: defined in RFCs, everyone has access to protocol definition; allows for interoperability; e.g., HTTP, SMTP
+    - proprietary protocols: e.g., Skype, Zoom
+
 - The transport-layer protocol provides services that can be categorized into:
-	- reliable data transfer
+	- data integrity: reliable data transfer
 	- throughput
 	- timing
 	- security
@@ -72,6 +90,13 @@
 	- The semantics of the fields.
 	- Rules for determining when and how a process sends messages and responds to messages.
 
+#### Client-Server Paradigm
+<img width="1012" alt="Screenshot 2024-01-22 at 8 43 11 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/e5a1228a-f8a4-4a7f-a87e-2fbdfe418b00">
+
+#### Peer-to-peer architecture
+<img width="1003" alt="Screenshot 2024-01-22 at 8 43 23 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/f7e62575-507b-4432-be95-380e87fa0d73">
+
+#### Socket
 ![image](https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/fd38d94b-d9ba-47ce-84dc-b3b5229c99a1)
 套接字就像两个通信的程序之间的门。我们用一些简单的比喻来理解：
 
@@ -142,65 +167,211 @@
 ## Section 2. The Web and HTTP
 
 ### Notes
-- End systems are referred to as hosts because they host (run) application programs such as:
-	- Web browser
-	- Web server
-	- E-mail client
-	- E-mail server
-- Access network is the network that physically connects an end system to the first router (edge router) on a path from the end system to any other distant end system.
-- The two most prevalent types of broadband residential access are digital subscriber line (DSL) and cable.
-- Telephone line for obtaining DSL is divided into:
-	- A high-speed downstream channel (50 KHZ to 1 MHZ band)
-	- A medium-speed upstream channel (4 KHZ to 50 KHZ band)
-	- An ordinary two-way telephone channel (0 to 4 KHZ band)
-- The DSL standards define multiple transimission rates, including downstream transmission rates 24 Mbs and 52 Mbs, and upstream rates of 3.5 Mbps and 16 Mbps.
-- The access is asymmetric because the downstream and upstream rates are different.
-- The actual rates are limied by:
-	- The DSL provider due to tiered services.
-	- The gauge if the twisted-pair line.
-	- The degree of electrical interference.
-- DSL is designed for short distances between 5 and 10 miles.
-- Cable internet access makes use if the cable television company's existing cable television infrastructure.
-- Physical media is categorized as
-	- Guides media:
-		- Fiber-optic cable
-			- An optical fiber is a thin, flexible medium that conducts pulses of light, with each pulse representing a bit.
-			- They are immune to electromagnetic interference, have very low signal attinuation up to 100 KMs.
-			- The Optical Carrier (OC) standard link speeds range from 51.8 Mbps to 39.8 Gbps. These specifications are often referred to as OC-n, where the link speed equals n * 51.8 Mbps.
-		- Twisted-pair copper wire
-			- Consists of two insulated copper wires, each about 1 mm thick, arranged in a regular spiral pattern.
-			- The wires are twisted together to reduce the electrical interference from similar pairs close by.
-		- Coaxial cable
-			- Consists of two copper conductors, but the two are cocentric rather than parallel.
-			- It can be used as a guided shared medium.
-	- Unguided media:
-		- Wireless LAN
-		- Digital satellite channel
-- The actual cost of physical link is relatively minor compared with other networking costs.
 
-### Review Questions
--  List four access technologies. Classify each one as home access, enterprise access, or wide-area wireless access.
-	- Home access: Ethernet LAN, Digital Subscriber Line over telephone line, and Cable internet access.
-	- Enterprise access: Ethernet, WI-FI.
-	- Wide-are Wireless access: 4G, 5G.
-- Is HFC transmission rate dedicated or shared among users? Are collisions possible in a downstream HFC channel? Why or why not?
-	- Shared.
-	- On the downstream channel, all packets emanate from a single source, namely, the head end. Thus, there are no collisions in the downstream channel.
--  List the available residential access technologies in your city. For each type of access, provide the advertised downstream rate, upstream rate, and monthly price.
-- What is the transmission rate of Ethernet LANs?
-	- Ethernet LANs have transmission rates of 10 Mbps, 100 Mbps, 1 Gbps and 10 Gbps. 
-- What are some of the physical media that Ethernet can run over?
-	- Twisted-pair copper cables.
-	- Fiber-optics cables.
-- HFC, DSL, and FTTH are all used for residential access. For each of these access technologies, provide a range of transmission rates and comment on whether the transmission rate is shared or dedicated.
-	- HFC: up to 42.8 Mbps and upstream rates of up to 30.7 Mbps, bandwidth is shared
-	- DSL: up to 24 Mbps downstream and 2.5 Mbps upstream, bandwidth is dedicated
-	- FTTH: 2-10Mbps upload; 10-20 Mbps download; bandwidth is not shared.
-- Describe the most popular wireless Internet access technologies today. Compare and contrast them.
-	- Wifi (802.11) In a wireless LAN, wireless users transmit/receive packets to/from an base station (i.e., wireless access point) within a radius of few tens of meters. The base station is typically connected to the wired Internet and thus serves to connect wireless users to the wired network.
-	- 3G and 4G wide-area wireless access networks. In these systems, packets are transmitted over the same wireless infrastructure used for cellular telephony, with the base station thus being managed by a telecommunications provider. This provides wireless access to users within a radius of tens of kilometers of the base station.
+#### HTTP: hypertext transfer protocol
 
-## Section 3. Email
+-  Web’s application-layer protocol
+-  client/server model
+   -  client: browser that requests, receives, (using HTTP protocol) and “displays” Web objects
+   -  server: Web server sends (using HTTP protocol) objects in response to requests
+- HTTP uses TCP:
+  - client initiates TCP connection (creates socket) to server, port 80
+  - server accepts TCP connection from client
+  - HTTP messages (application-layer protocol messages) exchanged between browser (HTTP client) and Web server (HTTP server)
+  - TCP connection closed
+- HTTP is “stateless”
+  - server maintains no information about past client requests
+
+***HTTP connections: two types*** 
+Non-persistent HTTP + Persistent HTTP(most common form used today)
+
+- Non-persistent HTTP Issues:
+  - requires 2 RTTs per object
+  - OS overhead for each TCP connection
+  - browsers often open multiple parallel TCP connections to fetch referenced objects in parallel
+  - Response time: 2RTTs + file transmission time (RTT is the time for a small packet to travel from client to server and back)
+  
+- Persistent HTTP (HTTP1.1) Issues: 
+  - server leaves connection open after sending response
+  - subsequent HTTP messages between same client/server sent over open connection
+  - client sends requests as soon as it encounters a referenced object
+  - as little as one RTT for all the referenced objects (cutting response time in half)
+
+***HTTP Request & Response***
+<img width="860" alt="Screenshot 2024-01-22 at 8 58 57 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/9c40e18f-d778-4387-8aff-7ffa0ad90e1a">
+
+HTTP Request Messages:
+- ASCII (human-readable format)
+
+1) request line (GET, POST, HEAD commands) 
+   `e.g. GET/index.html`
+2) header lines include 'Host' 'User-Agent' 'Accept' 'Accept-Language' 'Accept-Encoding' 'Connection'
+3) carriage return, line feed at start of line indicates end of header lines 
+
+<img width="1022" alt="Screenshot 2024-01-22 at 8 59 52 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/f496619a-a286-484d-b5f3-915751f69dab">
+
+HTTP Response status code:
+
+1) status line (protocol status code status phrase) 
+   `e.g. HTTP/1.1 200 OK`
+2) header lines include 'Date' 'Server' 'Last Modified' 'ETag' 'Accept-Ranges' 'Content-Length' 'Content-Type'
+3) body: data, e.g. requested HTML file
+
+<img width="954" alt="Screenshot 2024-01-22 at 9 00 54 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/3039c268-8ff5-406d-a750-70dfe8a0e4e8">
+
+#### Cookies
+Maintaining user/server state: Web sites and client browser use cookies to maintain some state between transactions
+
+**four components**
+1) cookie header line of HTTP response message
+2) cookie header line in next HTTP request message
+3) cookie file kept on user’s host, managed by user’s browser
+4) back-end database at Web site
+
+<img width="926" alt="Screenshot 2024-01-22 at 9 04 43 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/3da3e442-5284-4c77-bc3b-fd2acb2257ad">
+
+What cookies can be used for:
+- authorization
+- shopping carts
+- recommendations
+- user session state (Web e-mail)
+
+Challenge: How to keep state?
+- at protocol endpoints: maintain state at sender/receiver over multiple transactions
+- in messages: cookies in HTTP messages carry state
+
+cookies and privacy:
+- cookies permit sites to learn a lot about you on their site.
+- third party persistent cookies (tracking cookies) allow common identity (cookie value) to be tracked across multiple web sites
+
+#### Web caches 缓存 (aka proxy server 代理服务器)
+
+satisfy client requests without involving origin server
+
+1. user configures browser to point to a (local) Web cache
+2.  browser sends all HTTP requests to cache
+    - if object in cache: cache returns object to client
+    - else cache requests object from origin server, caches received object, then returns object to client
+
+Why Web caching?
+- reduce response time for client request
+  - cache is closer to client
+- reduce traffic on an institution’s access link
+- Internet is dense with caches
+  - enables “poor” content providers to more effectively deliver content
+
+Improve delay caused by large queueing at high utilization:
+1) buy a faster access link (more cost)
+2) install a web cache (cheaper! see quantify process in slides)
+
+**什么是web缓存**
+
+想象一下，你每天放学后都要到一个位于城市另一端的商店去买你最喜欢的漫画书。这趟旅程可能会很长，因为商店离你家很远。但如果在你家附近就有一个小书摊，而这个小书摊每天都从那个远处的商店里拿来几本最新的漫画书放在这里卖，那你就不用走那么远了，可以很快就买到漫画书。
+
+Web缓存就像是那个离你家很近的小书摊。它保存了你经常访问的网站的信息，这样当你下次再访问这个网站时，你的电脑就可以直接从离你更近的缓存服务器上获取信息，而不是每次都从远处的主服务器上下载。这不仅节省了你的时间，也减轻了网络上的交通——就像减少了大家都到同一个远处商店买书造成的拥堵。
+
+**Web缓存如何工作**
+
+当你在浏览器里输入一个网址，你的电脑会向缓存服务器发出请求，看看它是否有这个网站最新的信息。如果有，缓存服务器就会直接把这些信息发送给你的电脑。如果没有，缓存服务器会代替你的电脑去向远处的主服务器请求信息。得到信息后，缓存服务器既会把它发送给你的电脑，也会把它保存下来，这样下次别人或者你再请求同样的网站时就能直接从缓存服务器上获取了。
+
+缓存服务器也会记得每份信息应该保存多久。有些信息会经常更新，像新闻网站的首页，而有些信息不常变，像一些教学视频。缓存服务器会根据这些规则决定什么时候去主服务器上更新信息。
+
+通过这样的方式，Web缓存帮助我们更快地获取信息，同时也让整个互联网的运行更加顺畅。
+
+比喻：
+
+“在高利用率时会有大的排队延迟”，这就像是当图书馆入口人太多时，学生们要排很长时间的队才能进入，这样就耽误了他们借书和学习的时间。当很多人都在用同一条网络链路时（比如很多学生都想通过图书馆的入口），如果网络链路（图书馆的入口）快要达到最大容量时，大家就可能要等待更长的时间来传输数据（或者进入图书馆）。所以，图书馆需要有更多/更快的入口（faster access link）或者采用更有效的管理借书流程(use web cache)一样。
+
+#### Conditional GET
+
+don't send object if cache has up-to-date cached version
+
+“有条件的GET请求”的电脑网络技术，它和图书馆借书的规则有点相似：
+
+想象一下，你上次去图书馆借了一本书，然后回家之后把它复印了一份。下次你想看这本书时，你不一定非得再去图书馆，你可以直接看你复印的那份。但是，如果书有了新的内容（比如新的章节），你复印的版本就不是最新的了。所以，你可能会对图书管理员说：“如果这本书在我上次借阅后有更新，请告诉我，我就需要一个新的副本。”
+
+<img width="1004" alt="Screenshot 2024-01-22 at 9 49 13 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/47b5a2be-6f08-4c0e-9ed6-722237956ff1">
+
+在这张图中：
+
+1. 目标：不发送对象，如果缓存中已经有了最新版本。
+- 没有对象传输延迟（或使用网络资源）意味着如果你的复印版是最新的，你就不用等待去图书馆借书了。
+客户端：就是你的电脑，你告诉服务器（就像告诉图书管理员），如果自从某个日期后这本书有更新，你就想要下载新的内容。
+
+2. 服务器：就是图书馆的管理员，它会告诉你的电脑书有没有更新。
+- 如果没有更新（没有修改），它就会回复“304 Not Modified”（没有修改），这就像图书管理员说：“自从你上次来之后，书没有新的章节。”
+- 如果有更新，服务器就会回复“200 OK”和更新的内容（数据），就好像图书管理员给了你一本更新后的书。
+
+**跟Web缓存的关系**
+
+就像你不需要每次都去图书馆检查书有没有更新一样，你的电脑也可以使用有条件的GET来检查网上的信息有没有更新。如果没有，它就可以使用之前保存的版本，这样就不用每次都下载相同的信息了。这节省了时间也减少了网络上的流量，因为减少了重复的下载。这就是缓存的作用——存储信息，只在需要的时候更新。
+
+#### 总结
+
+比较一下Web缓存、Cookies和Conditional GET：
+
+**Web缓存**
+想象你的学校有一个资料室，它保存了很多常用的学习资料。当你需要某些资料时，你先去资料室看看，如果有，就不用去图书馆找了，这样既快又省力。Web缓存就像这个资料室，它保存了你经常查看的网页，所以当你下次访问这些网页时，你的电脑可以直接从这个“资料室”中快速拿到信息，而不是每次都去网站上重新加载。
+
+**Cookies**
+Cookies则像是学校发给你的一个小本子。每次你去资料室，管理员会在本子上记录你借了什么资料，下次你再来的时候，管理员就能看到你之前的记录，知道你喜欢什么，就可以快速帮你找到类似的资料。在网上，Cookies帮助网站记住你的信息（比如你登录状态、偏好设置等），这样网站就可以记得你是谁，并给你个性化的服务。
+
+**Conditional GET**
+Conditional GET就像你带着上次借的书回到资料室，然后问管理员：“这本书最近有更新吗？”如果管理员说“没有”，你就可以继续使用你的旧书。如果管理员说“有更新”，他就会给你一本新的书。在网上，这个过程可以帮助你的电脑决定是否需要下载网页的新版本，如果网页自从你上次访问后没有改变，你的电脑就可以使用缓存中的老版本，这样可以节省时间和网络流量。
+
+总的来说，Web缓存是用来保存你经常访问的网页，以便快速加载；Cookies是用来保存你的个人偏好和登录信息，以便网站可以个性化你的体验；Conditional GET是一种检查方法，用来看你的缓存中的网页是否还是最新的，如果是，就不用下载新的网页了。三者都是为了让你上网时更加方便快捷。
+
+#### HTTP/2 和 HTTP/3
+
+**HTTP1.1** 
+introduced multiple, pipelined GETs over single TCP connection
+-  server responds in-order (FCFS: first-come-first-served scheduling) to GET requests
+-  with FCFS, small object may have to wait for transmission (head-of-line (HOL) blocking) behind large object(s)
+-  loss recovery (retransmitting lost TCP segments) stalls object transmission
+
+**HOL是什么**
+
+HOL代表“Head-Of-Line Blocking”。
+
+想象你在学校的食堂排队等着买午饭，每个学生都要点自己的饭菜。如果前面的第一个学生（队伍的头部）花了很长时间来决定吃什么，或者他点的饭菜需要很长时间准备，那么即使后面的学生都知道自己要什么，他们也得等那个学生完成点餐并且拿到饭菜之后才能轮到自己。这就是“排头阻塞”，因为排在最前面的人或事物导致了后面所有人或事物的延迟。
+
+在计算机网络中，特别是在旧的HTTP/1.1协议里，HOL Blocking是指当多个请求通过单个TCP（传输控制协议）连接传输时，如果第一个请求被延迟（可能因为丢包或者长时间处理），那么即使后面的请求已经准备好了，它们也必须等待，因为TCP只能按顺序发送数据。这样就导致了效率低下，因为一次只能处理一个请求，后面的请求即使准备好了也必须等待。
+
+**HTTP/2**
+Key goal: decreased delay in multi-object HTTP requests
+
+- increased flexibility at server in sending objects to client:
+  - methods, status codes, most header fields unchanged from HTTP 1.1
+  - transmission order of requested objects based on client-specified object priority (not necessarily FCFS)
+  - push unrequested objects to client
+  - divide objects into frames, schedule frames to mitigate HOL blocking
+- HTTP/2 over single TCP connection means:
+  - recovery from packet loss still stalls all object transmissions as in HTTP 1.1, browsers have incentive to open multiple parallel
+  - TCP connections to reduce stalling, increase overall throughput no security over vanilla TCP connection
+
+HTTP/2对此进行了优化，采用了多路复用技术。还是用排队买午饭的例子来说明：
+
+如果说HTTP/1.1是每个学生排成一队等待点餐，HTTP/2就像是有一个超级能力的食堂管理员，他可以同时接受多个学生的订单，并且同时开始准备。这个管理员有很多手，可以同时做很多事情，不需要等一个学生的饭做完才开始做下一个的。
+
+在HTTP/2中，数据被分割成许多小的“帧Frame”，这些帧分属于不同的“流”，每个流对应一个请求。所有的帧都在同一个TCP连接上传输，但是它们可以独立处理，所以不会像HTTP/1.1那样互相阻塞。如果一个流中的帧被延迟了，其他流中的帧仍然可以被发送和接收，这就减少了延迟。
+
+这样的设计大大减少了HOL Blocking的问题，因为即使某个请求被阻塞，其他请求仍然可以继续进行，这就像那个超级能力的食堂管理员能确保所有学生的饭菜都在同时准备，没有人需要不必要的等待。
+
+**HTTP/3**
+
+adds security, per object error- and congestion control (more pipelining) over UDP
+- more on HTTP/3 in transport layer
+
+如果说HTTP/2是一个有多个手的超级食堂管理员，他可以同时接受和准备多个学生的订单，那么HTTP/3就像是食堂进行了一次技术革新，现在有了一个先进的点餐系统。这个新系统（HTTP/3）不再依赖一个食堂管理员，而是有很多个机器人管理员，每个都有自己的厨房。这样，即使一个机器人在制作一个复杂的菜肴时出了问题，其他机器人还可以继续他们的工作，不会影响整个食堂的效率。在HTTP/2中，如果超级食堂管理员在准备一个大订单时遇到问题，那么即使其他订单已经准备好了，也得等那个大订单完成。
+
+HTTP/3采用了一种叫做QUIC的新网络协议，它在传输数据时使用了一种不同的方式，让数据传输更加高效和可靠。它不像之前的版本那样在传输过程中会遇到的一些问题，比如网络变化导致的连接中断，或者数据包丢失导致整个数据流停止。
+
+回到食堂例子，这就好比每个机器人管理员都有自己的通讯设备，即使他们中的一个通讯设备出了问题，其他的机器人还是可以继续接收订单和制作食物，不会被影响。
+
+所以，总的来说，HTTP/3通过使用多个独立的机器人管理员（类似于多个独立的连接），每个都能处理自己的任务，即使其中一个遇到问题，也不会影响到其他的，这样就减少了等待时间，提高了整个系统的效率。
+
+
+## Section 3. Email, SMTP, IMAP
 
 ### Notes
  - To send a message from source end system to a destination end system, the source breaks long messages into smaller chunks of data known as packets.
@@ -418,3 +589,62 @@ bottleneck link: link on end-end path that constrains end-end throughput.
 ## Section 8. Supplemental Topics
 
 ### Notes
+
+
+- End systems are referred to as hosts because they host (run) application programs such as:
+	- Web browser
+	- Web server
+	- E-mail client
+	- E-mail server
+- Access network is the network that physically connects an end system to the first router (edge router) on a path from the end system to any other distant end system.
+- The two most prevalent types of broadband residential access are digital subscriber line (DSL) and cable.
+- Telephone line for obtaining DSL is divided into:
+	- A high-speed downstream channel (50 KHZ to 1 MHZ band)
+	- A medium-speed upstream channel (4 KHZ to 50 KHZ band)
+	- An ordinary two-way telephone channel (0 to 4 KHZ band)
+- The DSL standards define multiple transmission rates, including downstream transmission rates 24 Mbs and 52 Mbs, and upstream rates of 3.5 Mbps and 16 Mbps.
+- The access is asymmetric because the downstream and upstream rates are different.
+- The actual rates are limited by:
+	- The DSL provider due to tiered services.
+	- The gauge if the twisted-pair line.
+	- The degree of electrical interference.
+- DSL is designed for short distances between 5 and 10 miles.
+- Cable internet access makes use if the cable television company's existing cable television infrastructure.
+- Physical media is categorized as
+	- Guides media:
+		- Fiber-optic cable
+			- An optical fiber is a thin, flexible medium that conducts pulses of light, with each pulse representing a bit.
+			- They are immune to electromagnetic interference, have very low signal attenuation up to 100 KMs.
+			- The Optical Carrier (OC) standard link speeds range from 51.8 Mbps to 39.8 Gbps. These specifications are often referred to as OC-n, where the link speed equals n * 51.8 Mbps.
+		- Twisted-pair copper wire
+			- Consists of two insulated copper wires, each about 1 mm thick, arranged in a regular spiral pattern.
+			- The wires are twisted together to reduce the electrical interference from similar pairs close by.
+		- Coaxial cable
+			- Consists of two copper conductors, but the two are cocentric rather than parallel.
+			- It can be used as a guided shared medium.
+	- Unguided media:
+		- Wireless LAN
+		- Digital satellite channel
+- The actual cost of physical link is relatively minor compared with other networking costs.
+
+### Review Questions
+-  List four access technologies. Classify each one as home access, enterprise access, or wide-area wireless access.
+	- Home access: Ethernet LAN, Digital Subscriber Line over telephone line, and Cable internet access.
+	- Enterprise access: Ethernet, WI-FI.
+	- Wide-are Wireless access: 4G, 5G.
+- Is HFC transmission rate dedicated or shared among users? Are collisions possible in a downstream HFC channel? Why or why not?
+	- Shared.
+	- On the downstream channel, all packets emanate from a single source, namely, the head end. Thus, there are no collisions in the downstream channel.
+-  List the available residential access technologies in your city. For each type of access, provide the advertised downstream rate, upstream rate, and monthly price.
+- What is the transmission rate of Ethernet LANs?
+	- Ethernet LANs have transmission rates of 10 Mbps, 100 Mbps, 1 Gbps and 10 Gbps. 
+- What are some of the physical media that Ethernet can run over?
+	- Twisted-pair copper cables.
+	- Fiber-optics cables.
+- HFC, DSL, and FTTH are all used for residential access. For each of these access technologies, provide a range of transmission rates and comment on whether the transmission rate is shared or dedicated.
+	- HFC: up to 42.8 Mbps and upstream rates of up to 30.7 Mbps, bandwidth is shared
+	- DSL: up to 24 Mbps downstream and 2.5 Mbps upstream, bandwidth is dedicated
+	- FTTH: 2-10Mbps upload; 10-20 Mbps download; bandwidth is not shared.
+- Describe the most popular wireless Internet access technologies today. Compare and contrast them.
+	- Wifi (802.11) In a wireless LAN, wireless users transmit/receive packets to/from an base station (i.e., wireless access point) within a radius of few tens of meters. The base station is typically connected to the wired Internet and thus serves to connect wireless users to the wired network.
+	- 3G and 4G wide-area wireless access networks. In these systems, packets are transmitted over the same wireless infrastructure used for cellular telephony, with the base station thus being managed by a telecommunications provider. This provides wireless access to users within a radius of tens of kilometers of the base station.
