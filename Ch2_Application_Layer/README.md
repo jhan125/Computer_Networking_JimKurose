@@ -15,25 +15,23 @@
 			- [Cookies](#cookies)
 			- [Web caches 缓存 (aka proxy server 代理服务器)](#web-caches-缓存-aka-proxy-server-代理服务器)
 			- [Conditional GET](#conditional-get)
-			- [总结](#总结)
+			- [比较 Web缓存、Cookies和Conditional GET：](#比较-web缓存cookies和conditional-get)
 			- [HTTP/2 和 HTTP/3](#http2-和-http3)
 	- [Section 3. Email, SMTP, IMAP](#section-3-email-smtp-imap)
-		- [Notes](#notes-2)
-		- [Review Questions](#review-questions-1)
+		- [Email](#email)
+		- [SMTP (simple mail transfer protocol)](#smtp-simple-mail-transfer-protocol)
 	- [Section 4. The Domain Name Service: DNS](#section-4-the-domain-name-service-dns)
-		- [Notes](#notes-3)
-		- [Review Questions](#review-questions-2)
-	- [Section 5. Peer-to-Peer File Distribution](#section-5-peer-to-peer-file-distribution)
-		- [Notes](#notes-4)
-		- [Review Questions](#review-questions-3)
-	- [Section 6. Video Streaming and Content Distribution Networks](#section-6-video-streaming-and-content-distribution-networks)
-		- [Notes](#notes-5)
-		- [Review Questions](#review-questions-4)
+		- [DNS (Domain Name System)](#dns-domain-name-system)
+			- [DNS structure, function](#dns-structure-function)
+			- [resolving DNS queries](#resolving-dns-queries)
+			- [DNS record format](#dns-record-format)
+			- [DNS protocol messages](#dns-protocol-messages)
+			- [Getting your info into the DNS](#getting-your-info-into-the-dns)
+			- [DNS security](#dns-security)
 	- [Section 7. Socket Programming-Creating Network Applications](#section-7-socket-programming-creating-network-applications)
-		- [Notes](#notes-6)
+		- [Notes](#notes-2)
 	- [Section 8. Supplemental Topics](#section-8-supplemental-topics)
-		- [Notes](#notes-7)
-		- [Review Questions](#review-questions-5)
+		- [Notes](#notes-3)
    
 ## Section 1. Principles of Network Applications
 
@@ -306,9 +304,7 @@ don't send object if cache has up-to-date cached version
 
 就像你不需要每次都去图书馆检查书有没有更新一样，你的电脑也可以使用有条件的GET来检查网上的信息有没有更新。如果没有，它就可以使用之前保存的版本，这样就不用每次都下载相同的信息了。这节省了时间也减少了网络上的流量，因为减少了重复的下载。这就是缓存的作用——存储信息，只在需要的时候更新。
 
-#### 总结
-
-比较一下Web缓存、Cookies和Conditional GET：
+#### 比较 Web缓存、Cookies和Conditional GET：
 
 **Web缓存**
 想象你的学校有一个资料室，它保存了很多常用的学习资料。当你需要某些资料时，你先去资料室看看，如果有，就不用去图书馆找了，这样既快又省力。Web缓存就像这个资料室，它保存了你经常查看的网页，所以当你下次访问这些网页时，你的电脑可以直接从这个“资料室”中快速拿到信息，而不是每次都去网站上重新加载。
@@ -373,213 +369,307 @@ HTTP/3采用了一种叫做QUIC的新网络协议，它在传输数据时使用�
 
 ## Section 3. Email, SMTP, IMAP
 
-### Notes
- - To send a message from source end system to a destination end system, the source breaks long messages into smaller chunks of data known as packets.
- - Packet switches implement the store-and-forward mechanism.
-	- That means the packet switch must receive the entire packet before it can begin to transmit the first bit of the packet onto the outbound link.
- - Propagation delay is the time takes for the bits to travel across the wire near the speed of light.
- - End-to-end delay equals: N*(L/R)
-	- N: number of links.
-	- R: rate of each link
-	- L: packet length
- - Each packet switch has multiple links attached to it.
-	- For each attached link, the packet switch has an output buffer, which stores packets that the router is about to send into that link.
- - Packets suffer from delaying due to store-and-forward and queuing.
- - Packet loss occurs when there is a congestion in the network which results in the filling of the output buffer.
- - Each router has a forwarding table that maps destination addresses to the router's outbound links.
-  
-### Review Questions
- - Suppose there is exactly one packet switch between a sending host and a receiving host. The transmission rates between the sending host and the switch and between the switch and the receiving host are R1 and R2, respectively. Assuming that the switch uses store-and-forward packet switching, what is the total end-to-end delay to send a packet of length L? (Ignore queuing, propagation delay, and processing delay.)
-	 - (L/R1)+(L/R2)
- - What advantage does a circuit-switched network have over a packet switched network? What advantages does TDM have over FDM in a circuit-switched network?
-	 - Circuit-switched networks are well suitable for real time servicessuch as voice calls and video calls whereas packet-switched network are not suitable for real time services. They are suitable for handling data.
-	 - In circuit-switched networks, the transmission link is pre-allocated without taking into consideration the demand whereas packet-switched network allocates transmission link on demand.
-	 - In circuit-switched network, the bandwidth is reserved and so packets arrive within the bandwidth whereas in packet-switched network, the bandwidth is not reserved and so the packets may have to wait for their turn to be forwarded.
-	 - In time division multiplexing, all connections operate with same frequency at different times where as in frequency division multiplexing, all connections operate with different frequencies at the same time.
-	 - In TDM, when the network establishes a connection across a link, the network dedicates one time slot in every frame to the connection which is used only for that connection.
- -  Suppose users share a 2 Mbps link. Also suppose each user transmits continuously at 1 Mbps when transmitting, but each user transmits only 20 percent of the time.
-	 - When circuit switching is used, how many users can be supported?
-		 - 2 users can be supported because each user requires half of the link bandwidth.
-	 - For the remainder of this problem, suppose packet switching is used. Why will there be essentially no queuing delay before the link if two or fewer users transmit at the same time? Why will there be a queuing delay if three users transmit at the same time?
-		 - Since each user requires 1Mbps when transmitting, if two or fewer users transmit simultaneously, a maximum of 2Mbps will be required. Since the available bandwidth of the shared link is 2Mbps, there will be no queuing delay before the link. Whereas, if three users transmit simultaneously, the bandwidth required will be 3Mbps which is more than the available bandwidth of the shared link. In this case, there will be queuing delay before the link.
-	 - Find the probability that a given user is transmitting.
-		 - 0.008
-	 - Suppose now there are three users. Find the probability that at any given time, all three users are transmitting simultaneously. Find the fraction of time during which the queue grows.
-		 - Since the queue grows when all the users are transmitting, the fraction of time during which the queue grows (which is equal to the probability that all three users are transmitting simultaneously) is 0.008.
- - Why will two ISPs at the same level of the hierarchy often peer with each other? How does an IXP earn money?
-	 - By peering with each other, two ISP’s can reduce their cost and avoid paying to the intermediate ISP provider.
-	- An Internet Exchange Points (IXP) can earn money by charging each ISP that connects to it. The IXP charges each ISP based on the amount of traffic sent to or received from the IXP.
- -  Some content providers have created their own networks. Describe Google’s network. What motivates content providers to create these networks?
-	- Google’s network: 
-		- This network provides global data. 
-		- It is used to transfer content within the Google servers. 
-		- Its contains some Tier-1 ISP and interconnect with TCP/IP.
-	- Motivates: 
-		- It is used to save money by transfer data and less time to travel content. 
-		- Content providers to control over the services.
+### Email
+
+**3 major components**
+1. user agents (aka "mail reader")
+   - composing, editing, reading mail messages (e.g. Outlook)
+   - outgoing, incoming messages stored on server
+2. mail servers
+   - mailbox (contains incoming messages for user)
+   - message queue of outgoing (to be sent) mail messages
+3. simple mail transfer protocol (SMTP)
+   - between mail servers to send mail messages
+   - client: (sender side) sending mail server
+   - server: (receiver side) receiving mail server
+
+<img width="1034" alt="Screenshot 2024-01-22 at 1 34 04 PM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/fff113cc-1105-492e-92ba-5ed637a9ea92">
+
+### SMTP (simple mail transfer protocol)
+
+1. protocol for exchanging email messages, defined in RFC 5321 
+(like RFC 7231 defines HTTP)
+
+2. RFC 2822 defines syntax for email message itself 
+(like HTML defines syntax for web documents)
+
+- header lines: e.g. To, From, Subject
+- blank line
+- body: the message (ASCII characters only)
+
+**SMTP's comparison with HTTP**
+
+1. HTTP: client pull; SMTP: client push
+2. both have ASCII command/response interaction, status codes
+3. HTTP: each object encapsulated in its own response message;
+   SMTP: multiple objects sent in multipart message
+4. SMTP uses persistent connections
+5. SMTP requires message (header & body) to be in 7-bit ASCII
+6. SMTP server uses CRLF.CRLF to determine end of message
+
+SMTP和HTTP的不同：
+
+1. HTTP是客户端拉取，SMTP是客户端推送：
+
+想象HTTP就像你去餐厅点餐。你（客户端）告诉服务员（服务器）你想要什么，然后服务员把食物带给你。
+SMTP更像是你给朋友寄信。你（客户端）把信件放在邮箱里，然后邮递员（服务器）来收信并送到你朋友那里。
+
+2. 两者都使用ASCII命令/响应交互，状态码：
+
+这就像在餐厅点餐或寄信时，服务员和邮递员都会用一些标准的话来回应你，比如“订单收到”或“信件已发送”。
+
+3. HTTP: 每个对象都封装在它自己的响应消息中；SMTP: 多个对象可以在一个多部分消息中发送：
+
+使用HTTP，就像每次只能从服务员那里拿到一个菜品。使用SMTP，就像你可以在一个大信封里放很多东西（比如几封信、照片）一起寄出。
+
+4. SMTP使用持久连接：
+
+这就像邮递员在你把所有信件都放入邮箱后再离开，而不是每放一封信就走一趟。
+
+5. SMTP要求消息（头部和正文）必须是7位ASCII：
+
+这就像写信时只能使用特定的字母和符号，不能用图片或特殊字符。
+
+6. SMTP服务器用CRLF.CRLF来判断消息的结束：
+
+这就像在信的最后写上“敬上”来表示信已经写完，邮递员看到这个就知道这是信件的结尾。
+
+所以，总的来说，HTTP和SMTP都是用来在网络上交换信息的方法，但它们的工作方式不同。HTTP更像是一个请求-响应的过程，类似于在餐厅点餐；而SMTP是一个发送消息的过程，类似于寄信。
+
+<img width="986" alt="Screenshot 2024-01-22 at 3 19 47 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/425aeef5-e28d-4448-a508-ff946569f0dd">
+
+1. SMTP（简单邮件传输协议）就像你写了一封信然后把它放到你家附近的邮筒里。邮局的工作人员会来收信，然后把它传送到你朋友的邮筒。这里的SMTP就是邮局的传送系统，确保你的电子邮件从你的电脑安全地到达朋友的电子邮箱服务器。
+
+2. 邮件访问协议 IMAP（互联网消息访问协议）：这就像是你去邮局拿信。你可以看信，决定留下来还是扔掉，或者把它分类放到不同的文件夹里。即使你回家了，邮局里还有信的副本。
+   
+3. HTTP：这个过程就像是你通过网页版邮局检查你的邮件。你可以在任何有互联网的地方登录一个网页，比如Gmail或Yahoo!Mail，来发送（通过SMTP）和接收（通过IMAP或POP）电子邮件。
+   
+所以，这张图就是在说，SMTP是用来“寄出”电子邮件的，而IMAP和HTTP是用来“取回”电子邮件的不同方式。SMTP确保电子邮件能从寄件人发送到收件人的服务器上，IMAP允许收件人查看和管理邮件，而HTTP则提供了一个网页界面来进行这些操作。
 
 ## Section 4. The Domain Name Service: DNS
 
-### Notes
+### DNS (Domain Name System)
 
-- **How do packet delay and loss occur?**
-  - packets queue in router buffers, waiting for turn for transmission
-  - queue length grows when arrival rate to link (temporarily) exceeds output link
-capacity
-  - packet loss occurs when memory to hold queued packets fills up
+- distributed database implemented in the hierarchy of many name servers
+- a protocol for application layer: hosts, DNS servers communicate to resolve names (address/name translation)
+  - note: core internet function, implemented as application-layer protocol
+  - complexity at network's 'EDGE'
 
-**4 sources that cause packet delays:**
-- Nodal Processing Delay
-  - check bit errors, determine output link, typically < microsecs
-  - The time required to examine the packet's header and determine where to direct the packet.
-  - This delay is typically on the order of microseconds or less.
-- Queuing Delay
-  - time waiting at output link for transmission, depends on congestion level of router
-  - At the queue, the packet experiences a delay as it waits to be transmitted onto the link.
-  - This delay can be on the order of microseconds to milliseconds.
-- Transmission Delay
-  - L: packet length(bits), R: link transmission rate(bps), d(trans) = L/R
-  - The amount of time required to push all of the packet's bits into the link.
-  - This delay is on the order of microseconds to milliseconds.
-- Propagation Delay
-  - d: length of physical link, s: propagation speed, d(prop) = d/s
-  - The time required to propagate from the beginning of the link to the next router.
-  - The speed depends on the link physical medium.
-  - In WAN, this delay is on the order of milliseconds.
+DNS（域名系统）就像是互联网的电话簿。当你想要访问一个网站时，你通常会输入一个网址，比如 www.example.com。这个网址很容易被人记住，但是互联网上的计算机并不使用这些名字来定位和识别彼此，它们使用一串数字，称为IP地址，如 192.0.2.1。
 
-d(nodal) = d(proc) + d(queue) + d(trans) + d(prop)
+DNS的工作就是将你容易记住的网址（域名）转换成计算机使用的IP地址。每当你输入一个网址，你的计算机就会向DNS服务器发出请求，DNS服务器会查找对应的IP地址，并将其返回给你的计算机，然后你的计算机才能加载你想访问的网站。
 
-- **d(trans) and d(prop) very different**
+这个过程就像是当你想打电话给“小明”时，你不需要记住小明的电话号码，你只需要在电话簿里找到小明的名字，电话簿会告诉你小明的电话号码，然后你才能拨打电话。
 
-  - Transmission（传输）指的是数据从源头（例如计算机A）发送到网络中的行为。这一过程涉及到将数据编码成信号（比如电信号、光信号），然后通过网络连接（如以太网线缆、光纤或无线电波）发送出去。在这个阶段，重点是数据的“输出”，即数据是如何从源头发送出去的。
 
-  - Propagation（传播）则指的是这些编码过的信号在物理媒介（如网络电缆、光纤或空气）中移动的过程。在这个阶段，信号正在从一个地点传输到另一个地点，比如从一个路由器传输到另一个路由器。这个过程主要涉及到信号的移动速度，这通常由媒介的物理属性和信号的传播距离决定。
+**DNS services:**
+1. hostname-to-IP-address translation
+2. host aliasing: canonical, alias names
+3. mail server aliasing
+4. load distribution: replicated Web servers (many IP addresses correspond to one name)
+   
+DNS服务：
 
-  - 简单来说，transmission是关于数据如何被发送的，而propagation是关于一旦数据被发送，它如何通过网络媒介移动。两者都是数据通信过程中的重要部分，但关注的重点不同。
+1. 域名转IP地址：就像学校里每个学生都有自己的学号。当你知道朋友的名字但不知道学号时，你可以查学校的名册来找到对应的学号。
+2. 主机别名：有时候学校的活动或建筑有正式的名字和大家常用的别名。比如，图书馆可能正式叫“知识中心”，但大家都叫它“图书馆”。
+3. 邮件服务器别名：老师们可能有正式的电子邮件地址，但也有更容易记的别名，比如“数学老师”可能会被映射到一个真实的电子邮件地址。
+4. 负载分配：如果学校有很多个图书馆分布在校园的不同地方，你可以去任何一个图书馆借书。这样可以避免所有学生都挤在一个图书馆。
 
-**Traffic intensity**
+**Why not centralize DNS?**
+1. single point of failure
+1. traffic volume
+2. distant centralized database
+3. maintenance
 
-Traffic intensity is the rate of (arrival rate of bits) and (service rate of bits)
+**doesn‘t scale!**
+§ Comcast DNS servers alone: 600B DNS queries/day
+§ Akamai DNS servers alone: 2.2T DNS queries/day
 
-	- let, a: average packet arrival rate, L: packet length (bits), R: link bandwidth (bit transmission rate).
-	- Traffic Intensity = L.a/R
-	- La/R ~ 0: avg. queueing delay small
-	- La/R -> 1: avg. queueing delay large
-	- La/R > 1: more “work” arriving  is more than can be serviced -  average delay infinite!
-- The fraction of lost packets increases as the traffic intensity increases.
-- Performance at a node is often measured not only in terms of delay, but also in terms of the probability of packet loss.
+就像学校不可能只有一个办公室来处理全校所有的事情。如果那样的话，那个办公室如果出问题了，那么全校的事情都会受影响。而且如果每个学生都要去那个办公室，那里将会非常拥挤。DNS服务就像是学校里帮你找到你需要信息的地方，而分布式的结构（不是集中在一个地方）是为了避免压力集中在一个点上，导致系统不稳定和难以维护。
 
-traceroute program: 
+如果DNS集中在一个地方：
 
-provides delay measurement from source to router along end-end Internet path towards destination.
+1. 单点故障：如果那个中心出了问题，整个学校的通信都会停止。
+2. 流量体积：那个中心会非常忙，处理不过来所有的请求。
+3. 维护困难：只有一个地方负责所有事情，维护起来会非常困难。
+4. Comcast和Akamai的例子，是说即使是一个办公室也会每天收到很多请求，全校只有一个办公室的话压力会更大。
 
-**Packet Loss**
-- queue (aka buffer) preceding link in buffer has finite capacity
-- packet arriving to full queue dropped (aka lost)
-- lost packet may be retransmitted by previous node, by source end system, or not at all
+**Summary** 
 
-**Throughput（吞吐量）**
+DNS can be thought as ...
 
-rate (bits/time unit) at which bits are being sent from sender to receiver.
-	- instantaneous: rate at given point in time.
-	- average: rate over longer period of time.
+1. a humongous distributed database:
+   ~ billion records, each simple
+2. handles many trillions of queries/day:
+- many more reads than writes
+- performance matters: almost every Internet transaction interacts with DNS - msecs count!
+3. organizationally, physically decentralized:
+- millions of different organizations responsible for their records
+4. “bulletproof”: reliability, security
 
-用一些简单的比喻来理解这个概念：
+#### DNS structure, function
 
-想象一下有一根水管，水管的一端连接着水桶（服务器），另一端连接着水杯（计算机）。水桶里装的不是水，而是数据，我们可以称它为“数据流”。
+<img width="1053" alt="Screenshot 2024-01-22 at 3 38 20 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/37166a8f-9318-44f5-b5c4-3dd5a94bb38d">
 
-吞吐量（Throughput）：这就像是水桶向水杯里倒水的速度，用“多少升/每秒”来衡量，但在我们的例子中，我们用“多少比特/每秒”来衡量数据的传输速度。这个速度就是从水桶（服务器）到水杯（计算机）的数据传输速度。
+DNS的结构就像是一个有多层管理的大公司。在这个公司里，有不同层级的管理者，每个人负责不同的工作，以确保整个公司运作顺畅。
 
-吞吐量有两种不同的类型：
+**1. 根域名服务器（Root Name Servers）**
+- official, contact-of-last-resort by name servers that cannot resolve name
+- incredibly important Internet function
+  - Internet couldn’t function without it!
+  - DNSSEC – provides security (authentication, message integrity)
+- ICANN (Internet Corporation for Assigned Names and Numbers) manages root DNS domain
+- 13 logical root name "servers" worldwide each "server" replicated many times (~200 servers in US)
+- 这就像公司的董事会。根域名服务器是最高层级，当DNS系统需要开始查找域名（比如你想访问的网站）对应的IP地址时，就从这里开始。有13组根域名服务器分布在世界各地，它们知道所有顶级域名服务器的位置，但它们不直接知道每个域名的IP地址。
 
-- 瞬时吞吐量（Instantaneous）：这就像你突然看了一下水桶倒水的速度，就在那一瞬间的速度，可能是因为水桶刚倒的时候水流特别快，或者水快倒完时变慢了。
+**2. 顶级域名服务器（Top-Level Domain 'TLD' Servers）：**
+- responsible for .com, .org, .net, .edu, .aero, .jobs, .museums, and all top-level country domains, e.g.: .cn, .uk, .fr, .ca, .jp
+- Network Solutions: authoritative registry for .com, .net TLD
+- Educause: .edu TLD
+- 顶级域名服务器像是公司中的部门经理。每个顶级域名服务器负责管理域名的一个部分，比如.com、.org、.net或一个国家的域名，如.uk、.de等。当根服务器被问到特定的域名时，它会指向相关的顶级域名服务器。
 
-- 平均吞吐量（Average）：这不是看一瞬间的速度，而是你看了一段时间，比如一分钟，然后计算这一分钟内平均的倒水速度是多少。这就像是我们不仅仅看水桶开始倒水的速度，还要看整个过程中的平均速度。
+**3. 权威域名服务器（Authoritative DNS Servers）：**
+- organization’s own DNS server(s), providing authoritative hostname to IP mappings for organization’s named hosts
+- can be maintained by organization or service provider
+- 权威服务器就像是公司的项目经理。它负责知道具体的域名对应的IP地址。当顶级域名服务器被问到更具体的域名（比如www.amazon.com）时，它会指向权威服务器，权威服务器有权提供该域名的最终IP地址。
 
-水管能够承载的数据流的速率有两个表示：
-- R_s（server）：这是水桶（服务器）能够向水管里倒水的速率，或者说是服务器能发送数据的速率。
-- R_c（client）：这是水管能够承载的最大速率，就是水管最多能允许多快的水流通过，不会溢出来。在计算机网络中，这可以理解为网络的最大传输能力。
+**4. 本地域名服务器（Local DNS Name Servers）：**
+- when host makes DNS query, it is sent to its local DNS server
+  - Local DNS server returns reply, answering:
+    - from its local cache of recent name-to-address translation pairs (possibly out of date!) 
+    - forwarding request into DNS hierarchy for resolution
+  - each ISP has local DNS name server; to find yours:
+    - `MacOS: % scutil --dns`
+    - `Windows: >ipconfig /all`
+- local DNS server doesn’t strictly belong to hierarchy
+- 这就像是公司前台。它通常是你的互联网服务提供商（ISP）拥有的DNS服务器。当你想要访问一个网站时，你的电脑首先会问前台，即本地DNS服务器，它有没有这个网站的IP地址。如果本地服务器不知道，它会代表你去问更高层级的服务器，直到找到答案。
 
-bottleneck link: link on end-end path that constrains end-end throughput.
+在这个过程中，每个域名服务器都有它的责任和权限范围。当一个域名查询发生时，会从本地DNS服务器开始，逐步向上到根服务器，再向下到顶级域名服务器和权威域名服务器，直到找到准确的IP地址，然后这个信息会沿着相同的路径返回给本地服务器，最后返回给你的电脑，这样你就可以访问你想去的网站了。
 
-“瓶颈链路”意思是从一端传到另一端的平均吞吐量，要么是由服务器的输出速率决定的，要么是由网络中最慢的连接速率决定的，这取决于哪个速率更慢。这就像是水流从水桶流向水杯的过程，要么是水桶倒水的速度慢，要么是水管狭窄导致水流不畅。
+#### resolving DNS queries
 
-### Review Questions
-- Consider sending a packet from a source host to a destination host over a fixed route. List the delay components in the end-to-end delay. Which of these delays are constant and which are variable?
-	- Nodal Processing Delay (Constant).
-	- Queuing Delay (Variable).
-	- Transmission Delay (Constant).
-	- Propagation Delay (Constant).
-  
--  How long does it take a packet of length 1,000 bytes to propagate over a link of distance 2,500 km, propagation speed 2.5 * 10^8 m/s, and transmission rate 2 Mbps? More generally, how long does it take a packet of length L to propagate over a link of distance d, propagation speed s, and transmission rate R bps? Does this delay depend on packet length? Does this delay depend on transmission rate?
-	- The propagation delay is the ratio between the distance and the speed which is numerically equal to 0.01 seconds.
-	- This numerical value doesn't depend on the length of the packet or the transmission rate.
+DNS name resolutions: DNS的名称解析是将用户友好的域名（如 www.example.com）转换成计算机可理解的IP地址（如 192.0.2.1）的过程。在这个过程中，有两种主要的查询方法：迭代查询（Iterated Query）和递归查询（Recursive Query）。
 
-- Suppose Host A wants to send a large file to Host B. The path from Host A to Host B has three links, of rates R1 = 500 kbps, R2 = 2 Mbps, and R3 = 1 Mbps. 
-	- a. Assuming no other traffic in the network, what is the throughput for the file transfer?
-		- The minimum value of the rates of the three links = 500 Kbps.
-	- b. Suppose the file is 4 million bytes. Dividing the file size by the throughput, roughly how long will it take to transfer the file to Host B?
-		- 64 seconds.
+**Iterated Query**
 
-## Section 5. Peer-to-Peer File Distribution
+<img width="1040" alt="Screenshot 2024-01-22 at 3 54 18 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/793debd5-59b8-444b-b79b-94ccfdf3fdd1">
 
-### Notes
-- A layered architecture allows us to discuss a well-defined, specific part of a large and complex system.
-- The internet protocol stack consists of the following layers from top to down:
-	- Application layer: HTTP, SMTP, FTP, DNS
-	- Transport layer: TCP, UDP
-	- Network layer: IP
-	- Link layer: Ethernet, WIFI
-	- Physical layer
-  
-<img width="934" alt="Screenshot 2024-01-19 at 9 59 12 AM" src="https://github.com/jhan125/Computer_Networking_JimKurose/assets/98071264/53ffd428-bac0-45b6-888e-1465e17b3f9f">
+这就像你自己去找某个学生。首先，你去学校办公室问，办公室告诉你应该去哪栋楼。然后你去那栋楼的管理处，管理处告诉你具体在哪个楼层。最后，你去那个楼层的辅导员那里，辅导员告诉你具体在哪个教室。在整个过程中，你自己负责从一个地方走到另一个地方，每个人只告诉你下一步应该去哪里。
 
-### Review Questions
--  List five tasks that a layer can perform. Is it possible that one (or more) of these tasks could be performed by two (or more) layers?
-	-  Five generic tasks are error control, flow control, segmentation and reassembly, multiplexing, and connection setup.
-	- Yes. Each layer in the Internet protocal stack implement an error recovery on pre-link basis and end-to-end basis.
-- What are the five layers in the Internet protocol stack? What are the principal responsibilities of each of these layers?
-	- Application layer: 
-	- Transport layer: transports application-layer messages between application endpoints.
-	- Network layer: moves network-layer packets from one host to another.
-	- Link layer: routes a datagram through a series of routers between the source and destination.
-	- Physical layer: moves the individual bits within the frame from one node to the next.
-- What is an application-layer message? A transport-layer segment? A network-layer datagram? A link-layer frame?
-	- Application-layer message is the information at the application layer.
-	- Transport-layer segment is the packet at the transport layer after adding headers.
-- Which layers in the Internet protocol stack does a router process? Which layers does a link-layer switch process? Which layers does a host process?
-	- Routers process network, link and physical layers (layers 1 through 3).
-	- Link layer switches process link and physical layers (layers 1 through 2).
-	- Hosts process all five layers.
+在DNS中，迭代查询是当一个DNS服务器接收到查询请求时，它可能会返回下一个要查询的DNS服务器的地址给客户端，客户端然后向这个新服务器发起新的查询，如此重复直到找到答案。
 
-## Section 6. Video Streaming and Content Distribution Networks
+**Recursive Query**
 
-### Notes
-- Possible attacks
-  1. 数据包拦截（packet interception）好比是有人在邮局里偷看别人的信。在计算机网络中，这种行为叫做“数据包嗅探”（packet sniffing）。当数据（像信件一样）在网络（可以想象成一条公路）上传输时，有些不好的人（黑客）会使用特殊的工具来“嗅探”这些数据。特别是在像共享以太网或无线网络这样的广播媒体中，他们可以抓取经过的所有数据包，包括密码等敏感信息。
-  2. 伪装身份（fake identity）就像是有人寄了一个假的地址标签的包裹。在网络中，这称为“IP欺骗”（IP spoofing）。黑客发送一个带有假冒源地址的数据包，让接收者以为数据包来自另一个合法的来源。
-  3. 服务拒绝攻击（Denial of Service, DoS）就像一个坏人故意在商店门口堆满了垃圾，导致顾客无法进入商店。在计算机网络中，这种攻击是通过发送大量无意义的流量到某个服务器，使得合法的流量不能到达服务器，从而使服务器或网络带宽不可用。
-    - 服务拒绝攻击通常有以下步骤：
-      - 选择目标： 就是黑客选定要攻击的服务器。
-      - 入侵周围的主机： 黑客会入侵网络中的其他电脑，这些被入侵的电脑被称为“僵尸网络”（botnet）的一部分。
-      - 从受损的主机发送数据包到目标： 黑客通过这些被控制的电脑发送大量数据包给目标服务器，导致正常的流量无法到达。
+<img width="1021" alt="Screenshot 2024-01-22 at 3 57 01 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/5228561a-b4e9-4f8d-a7ad-5fc97a86aed7">
 
-**Lines of defense:**
-- authentication: proving you are who you say you are
-  - cellular networks provides hardware identity via SIM card; no such hardware assist in traditional Internet
-- confidentiality: via encryption
-- integrity checks: digital signatures prevent/detect tampering
-- access restrictions: password-protected VPNs
-- firewalls: specialized “middleboxes” in access and core networks:
-  - off-by-default: filter incoming packets to restrict senders, receivers, applications
-  - detecting/reacting to DOS attacks
-- … lots more on security (throughout, Chapter 8)
+这就像你直接让学校办公室的人帮你找到那个学生。你告诉办公室你要找的人，然后办公室的工作人员自己去找，他们可能先去楼层辅导员那里问，然后再去具体的教室，最后把找到的结果带回来告诉你。
 
-### Review Questions
--  What is self-replicating malware?
-- Describe how a botnet can be created and how it can be used for a DDoS attack.
-- Suppose Alice and Bob are sending packets to each other over a computer network. Suppose Trudy positions herself in the network so that she can capture all the packets sent by Alice and send whatever she wants to Bob; she can also capture all the packets sent by Bob and send whatever she wants to Alice. List some of the malicious things Trudy can do from this position.
+在DNS中，递归查询是当一个DNS服务器接收到查询请求时，如果它没有答案，它就会代表请求者去其他服务器查询，并负责完成整个查找过程，最后只返回最终的结果给客户端。
 
+在实际的DNS查询中，通常会使用这两种方法的组合。一个本地DNS服务器可能对客户端进行递归查询，然后它自己对其他DNS服务器进行迭代查询。这种组合方法可以减少客户端的查询负担，同时允许DNS服务器有效地管理名称解析过程。
+
+**Caching DNS Information**
+- once (any) name server learns mapping, it caches mapping, and immediately returns a cached mapping in response to a query
+  - caching improves response time
+  - cache entries timeout (disappear) after some time (TTL)
+  - TLD servers typically cached in local name servers
+- cached entries may be out-of-date
+  - if named host changes IP address, may not be known Internet-wide until all TTLs expire!
+  - best-effort name-to-address translation!
+
+**缓存DNS信息的好处是：**
+
+1. 提高响应时间：就像图书管理员用记录本直接告诉你书的位置，而不是每次都去查找书架，这样可以更快地回应下一个想借这本书的人。
+2. 缓存有超时时间（TTL，Time-To-Live）：记录本上的标记不会永远存在。过了一段时间（TTL），标记就会被清除，这样可以保证信息的更新。这就像管理员定期检查记录本，确保书的位置信息是最新的。
+
+**缓存可能的问题：**
+
+1. 如果书的位置变了（比如被移到了另一个地方），但记录本上的标记还没更新，那么管理员可能会告诉你错误的位置。在DNS中，如果一个网站的IP地址变了，但是DNS的缓存还没更新，你的电脑可能会被告知旧的IP地址，直到缓存过期并获取到最新信息。
+2. 这个过程是尽力而为的：就像图书管理员尽最大努力确保书的位置信息是准确的，但有时候可能还是会出错一样，DNS服务器也尽力确保它提供的IP地址是最新的，但有时候也可能会有延迟。这就是为什么有时候你可能会遇到一个网站无法访问，然后过一会儿又可以访问了——这可能是因为DNS信息刚刚更新了缓存。
+
+#### DNS record format
+
+<img width="1026" alt="Screenshot 2024-01-22 at 4 05 40 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/fe53b3be-2656-4212-ba05-f1a284d2b557">
+
+DNS记录就像是学校的详细名册，里面不只有学生的名字和学号，还包括他们的班级、课表、校车路线等信息。每个学生或老师在名册中都有不同类型的记录，告诉大家如何找到他们或他们负责的服务。在DNS中，这些记录称为资源记录（Resource Record，RR），每个记录都有类型，告诉你这个记录是用来干什么的。
+
+一些常见的DNS记录类型和它们的类比：
+
+1. NS记录（Name Server Record）：
+   
+类型：NS
+就像是告诉你哪个老师负责哪个班级。例如，foo.com的NS记录会告诉你负责foo.com这个域名的服务器的名字。
+
+2. A记录（Address Record）：
+
+类型：A
+就像是学生的名字和学号。它告诉你一个具体的电脑名字（如server1.foo.com）对应的IP地址是多少。
+
+3. CNAME记录（Canonical Name Record）：
+
+类型：CNAME
+就像是别名。如果一个学生有一个常用名字和一个正式名字，CNAME记录会告诉你www.example.com这个名字实际上是servereast.backup2.example.com。
+
+4. MX记录（Mail Exchange Record）：
+
+类型：MX
+就像是告诉你学校的邮件服务负责人是谁。如果你要发邮件给example.com中的某人，MX记录会告诉你应该把邮件发送到哪个邮件服务器。
+
+这些记录都有一个TTL（生存时间），就像是名册里记录的信息每学期都要更新一次。这样确保了信息的准确性，因为学生可能换了班级，老师可能换了教学科目，等等。
+
+#### DNS protocol messages
+
+<img width="882" alt="Screenshot 2024-01-22 at 4 07 00 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/45352834-ce9c-4636-93f5-231f7b32e023">
+
+<img width="879" alt="Screenshot 2024-01-22 at 4 07 35 PM" src="https://github.com/geekahmed/Computer-Networking---A-Top-Down-Approach/assets/98071264/9f34fc7e-a37e-45f5-9e23-ca26d3461b29">
+
+
+#### Getting your info into the DNS
+
+example: new startup “Network Utopia”
+- register name networkuptopia.com at DNS registrar (e.g., Network
+Solutions)
+  - provide names, IP addresses of authoritative name server (primary and secondary)
+  - registrar inserts NS, A RRs into .com TLD server:
+  - `(networkutopia.com, dns1.networkutopia.com, NS)`
+  - `(dns1.networkutopia.com, 212.212.212.1, A)`
+- create authoritative server locally with IP address 212.212.212.1
+  - type A record for www.networkuptopia.com
+  - type MX record for networkutopia.com
+
+**流程：**
+
+1. 注册域名：
+
+首先，你需要给你的公司取一个名字，并且在一个叫做域名注册机构（比如Network Solutions）的地方登记这个名字。就像你要在市政府登记一个新的商业名称一样，这样别人就知道那个名字属于你了。
+
+2. 提供服务器名称和IP地址：
+
+当你在域名注册机构登记你的网站名字，比如networkutopia.com后，你需要告诉他们你的服务器的名字和数字地址（IP地址）。这就像你告诉市政府你的公司地址和电话号码，这样人们就知道怎么联系你了。
+
+3. 注册机构更新DNS记录：
+
+注册机构会在互联网的地址簿里（.com顶级域名服务器）加上你的信息。他们会创建两条记录：一条NS记录，告诉大家你的域名networkutopia.com是由哪个服务器（比如dns1.networkutopia.com）管理的；还有一条A记录，告诉大家这个服务器的数字地址（IP地址）是212.212.212.1。
+
+4. 设置你自己的权威服务器：
+
+你需要在一个电脑上设置一个DNS服务器，让它成为你公司域名信息的权威来源。你可以在这个服务器上设置更多的DNS记录，比如一个A记录，让人们通过www.networkutopia.com就能访问你的网站，还有一个MX记录，告诉大家要把发给networkutopia.com的邮件送到哪个邮件服务器。
+
+#### DNS security
+
+**DDoS attacks**
+- bombard root servers with traffic
+  - not successful to date
+  - traffic filtering
+  - local DNS servers cache IPs of TLD servers, allowing root server bypass
+- bombard TLD servers
+  - potentially more dangerous
+
+**Spoofing attacks**
+- intercept DNS queries, returning bogus replies
+- DNS cache poisoning
+- RFC 4033: DNSSEC
+- authentication services
 
 ## Section 7. Socket Programming-Creating Network Applications
 
@@ -590,61 +680,3 @@ bottleneck link: link on end-end path that constrains end-end throughput.
 
 ### Notes
 
-
-- End systems are referred to as hosts because they host (run) application programs such as:
-	- Web browser
-	- Web server
-	- E-mail client
-	- E-mail server
-- Access network is the network that physically connects an end system to the first router (edge router) on a path from the end system to any other distant end system.
-- The two most prevalent types of broadband residential access are digital subscriber line (DSL) and cable.
-- Telephone line for obtaining DSL is divided into:
-	- A high-speed downstream channel (50 KHZ to 1 MHZ band)
-	- A medium-speed upstream channel (4 KHZ to 50 KHZ band)
-	- An ordinary two-way telephone channel (0 to 4 KHZ band)
-- The DSL standards define multiple transmission rates, including downstream transmission rates 24 Mbs and 52 Mbs, and upstream rates of 3.5 Mbps and 16 Mbps.
-- The access is asymmetric because the downstream and upstream rates are different.
-- The actual rates are limited by:
-	- The DSL provider due to tiered services.
-	- The gauge if the twisted-pair line.
-	- The degree of electrical interference.
-- DSL is designed for short distances between 5 and 10 miles.
-- Cable internet access makes use if the cable television company's existing cable television infrastructure.
-- Physical media is categorized as
-	- Guides media:
-		- Fiber-optic cable
-			- An optical fiber is a thin, flexible medium that conducts pulses of light, with each pulse representing a bit.
-			- They are immune to electromagnetic interference, have very low signal attenuation up to 100 KMs.
-			- The Optical Carrier (OC) standard link speeds range from 51.8 Mbps to 39.8 Gbps. These specifications are often referred to as OC-n, where the link speed equals n * 51.8 Mbps.
-		- Twisted-pair copper wire
-			- Consists of two insulated copper wires, each about 1 mm thick, arranged in a regular spiral pattern.
-			- The wires are twisted together to reduce the electrical interference from similar pairs close by.
-		- Coaxial cable
-			- Consists of two copper conductors, but the two are cocentric rather than parallel.
-			- It can be used as a guided shared medium.
-	- Unguided media:
-		- Wireless LAN
-		- Digital satellite channel
-- The actual cost of physical link is relatively minor compared with other networking costs.
-
-### Review Questions
--  List four access technologies. Classify each one as home access, enterprise access, or wide-area wireless access.
-	- Home access: Ethernet LAN, Digital Subscriber Line over telephone line, and Cable internet access.
-	- Enterprise access: Ethernet, WI-FI.
-	- Wide-are Wireless access: 4G, 5G.
-- Is HFC transmission rate dedicated or shared among users? Are collisions possible in a downstream HFC channel? Why or why not?
-	- Shared.
-	- On the downstream channel, all packets emanate from a single source, namely, the head end. Thus, there are no collisions in the downstream channel.
--  List the available residential access technologies in your city. For each type of access, provide the advertised downstream rate, upstream rate, and monthly price.
-- What is the transmission rate of Ethernet LANs?
-	- Ethernet LANs have transmission rates of 10 Mbps, 100 Mbps, 1 Gbps and 10 Gbps. 
-- What are some of the physical media that Ethernet can run over?
-	- Twisted-pair copper cables.
-	- Fiber-optics cables.
-- HFC, DSL, and FTTH are all used for residential access. For each of these access technologies, provide a range of transmission rates and comment on whether the transmission rate is shared or dedicated.
-	- HFC: up to 42.8 Mbps and upstream rates of up to 30.7 Mbps, bandwidth is shared
-	- DSL: up to 24 Mbps downstream and 2.5 Mbps upstream, bandwidth is dedicated
-	- FTTH: 2-10Mbps upload; 10-20 Mbps download; bandwidth is not shared.
-- Describe the most popular wireless Internet access technologies today. Compare and contrast them.
-	- Wifi (802.11) In a wireless LAN, wireless users transmit/receive packets to/from an base station (i.e., wireless access point) within a radius of few tens of meters. The base station is typically connected to the wired Internet and thus serves to connect wireless users to the wired network.
-	- 3G and 4G wide-area wireless access networks. In these systems, packets are transmitted over the same wireless infrastructure used for cellular telephony, with the base station thus being managed by a telecommunications provider. This provides wireless access to users within a radius of tens of kilometers of the base station.
